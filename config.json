@@ -1,5 +1,5 @@
 {
-    "poolHost": "mine.xaria.xyz",
+    "poolHost": "wallet.xaria.xyz",
 
     "coin": "xaria",
     "symbol": "XARI",
@@ -27,7 +27,7 @@
     "poolServer": {
         "enabled": true,
         "clusterForks": "auto",
-        "poolAddress": "XaxyxSsAqn5K6hU1gUB2tcAa4zuJmJw1J6dNoCA4yJAJPq9ydecBLeXLAKUDwH5MSjfV2bH4j2Qjr7c8pB6uMYjY3oSnE5PcKo",
+        "poolAddress": "XaxynusRT1d1k3DoSQYdfef2EgEzEpfmrBtfZgAnJbcsifvJJA1QfodRhHcnj19EiSbRJPZAW8Ymcc1P7R3B2ij3886ubQVr4z",
         "intAddressPrefix": null,
         "blockRefreshInterval": 1000,
         "minerTimeout": 900,
