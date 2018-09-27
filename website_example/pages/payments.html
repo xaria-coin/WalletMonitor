@@ -1,75 +1,7 @@
 <!-- Statistics -->
 <div id="paymentsStats" class="row">
 
-    <!-- Total Payments -->
-    <div class="col-lg-3 col-sm-6">
-        <div class="infoBox hoverExpandEffect">
-            <div class="icon">
-                <span class="fa fa-money"></span>
-            </div>
-            <div class="content">
-                <div class="text"><span tkey="paymentsTotal">Total Payments</span></div>
-                <div class="value"><span id="paymentsTotal">N/A</span> <span class="smallText">(<strong><span id="paymentsTotalPaid">N/A</span></strong> <span tkey="minersCount">miners</span>)</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Minimum Payment Threshold -->
-    <div class="col-lg-3 col-sm-6">
-        <div class="infoBox hoverExpandEffect">
-            <div class="icon">
-                <span class="fa fa-dollar"></span>
-            </div>
-            <div class="content">
-                <div class="text"><span tkey="paymentsMinimum">Minimum Payout</span></div>
-                <div class="value"><span id="paymentsMinimum">N/A</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Payment Interval -->
-    <div class="col-lg-3 col-sm-6">
-        <div class="infoBox hoverExpandEffect">
-            <div class="icon">
-                <span class="fa fa-clock-o"></span>
-            </div>
-            <div class="content">
-                <div class="text"><span tkey="paymentsInterval">Payment Interval</span></div>
-                <div class="value"><span id="paymentsInterval">N/A</span></div>
-            </div>
-        </div>
-    </div>
     
-    <!-- Denomination Unit -->
-    <div class="col-lg-3 col-sm-6">
-        <div class="infoBox hoverExpandEffect">
-            <div class="icon">
-                <span class="fa fa-hashtag"></span>
-            </div>
-            <div class="content">
-                <div class="text"><span tkey="paymentsDenomination">Denomination Unit</span></div>
-                <div class="value"><span id="paymentsDenomination">N/A</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Payment mechanism -->
-    <div class="col-sm-12" id="slush_description">
-        <div class="slushInfo hoverExpandEffect">
-            <div class="text"><span>Payment system</span></div>
-            <div class="content clearfix">
-                <div class="value"><p>This pool uses the "Score" payment system, under which later
-                  shares submitted by miners receive more weight in determining the miner's reward than earlier shares.
-
-                    <p>For more details (including the specific mathematics involved) see the <a
-                     href="https://slushpool.com/help/manual/rewards">slushpool reward
-                     description</a>.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-</div>
 
 <!-- Report -->
 <div class="card push-up-10">
@@ -98,6 +30,9 @@
 
 <!-- Javascript -->
 <script>
+
+
+
 // Update current page
 currentPage = {
     destroy: function(){

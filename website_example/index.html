@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
 
-    <title>Cryptonote Wallet Monitor</title>
+    <title>Wallet Monitor</title>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.min.js"></script>
@@ -22,15 +22,11 @@
 
     <!-- Navigation -->
     <div class="nav-side-menu">
-        <div class="brand"><a href="/"><span id="coinSymbol"></span> <span tkey="publicWallet">Public Wallet</span></a></div>
+        <div class="brand"><a href="#transactions"><span id="coinSymbol"></span> <span tkey="publicWallet">Public Wallet</span></a></div>
         <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>  
         <div class="menu-list">
             <ul id="menu-content" class="menu-content collapsed out">
         
-                <li><a class="hot_link" data-page="home.html" href="#">
-                    <i class="fa fa-home"></i> <span tkey="dashboard">Dashboard</span>
-                </a></li>
-
                 <li><a class="hot_link" data-page="trans.html" href="#transactions">
                     <i class="fa fa-money"></i> <span tkey="trans">Charity Wallet</span>
                 </a></li>
@@ -112,13 +108,24 @@ function updateLiveStats(data) {
 function updateIndex(){
     updateText('coinSymbol', lastStats.config.symbol);
     updateText('g_networkHashrate', getReadableHashRateString(lastStats.network.difficulty / lastStats.config.coinDifficultyTarget) + '/sec');
-    updateText('g_poolHashrate', getReadableHashRateString(lastStats.pool.hashrate) + '/sec');    
+    updateText('g_poolHashrate', getReadableHashRateString(lastStats.pool.hashrate) + '/sec');
+	updateText('blockchainHeight', formatNumber(lastStats.network.height.toString(), ' '));
+
+    
     if (lastStats.miner && lastStats.miner.hashrate){
          updateText('g_userHashrate', getReadableHashRateString(lastStats.miner.hashrate) + '/sec');
     }
     else{
         updateText('g_userHashrate', 'N/A');
     }    
+	
+	if (lastStats.config.networkFee) {
+            var networkFeePercent = lastStats.config.networkFee / 100;
+            updateText('networkLastReward', getReadableCoins(lastStats.lastblock.reward - (lastStats.lastblock.reward * networkFeePercent)));
+        } else {
+            updateText('networkLastReward', getReadableCoins(lastStats.lastblock.reward));
+        }
+	
     updateText('poolVersion', lastStats.config.version);
 }
 

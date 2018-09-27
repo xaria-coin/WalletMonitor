@@ -25,23 +25,8 @@ global.redisClient = redis.createClient(config.redis.port, config.redis.host, { 
 // Load pool modules
 if (cluster.isWorker){
     switch(process.env.workerType){
-        case 'pool':
-            require('./lib/pool.js');
-            break;
-        case 'blockUnlocker':
-            require('./lib/blockUnlocker.js');
-            break;
-        case 'paymentProcessor':
-            require('./lib/paymentProcessor.js');
-            break;
         case 'api':
             require('./lib/api.js');
-            break;
-        case 'chartsDataCollector':
-            require('./lib/chartsDataCollector.js');
-            break;
-        case 'telegramBot':
-            require('./lib/telegramBot.js');
             break;
     }
     return;
@@ -79,33 +64,13 @@ var singleModule = (function(){
             log('info', logSystem, 'Running in single module mode: %s', [singleModule]);
 
             switch(singleModule){
-                case 'pool':
-                    spawnPoolWorkers();
-                    break;
-                case 'unlocker':
-                    spawnBlockUnlocker();
-                    break;
-                case 'payments':
-                    spawnPaymentProcessor();
-                    break;
                 case 'api':
                     spawnApi();
                     break;
-                case 'chartsDataCollector':
-                    spawnChartsDataCollector();
-                    break;
-                case 'telegramBot':
-                    spawnTelegramBot();
-                    break;
-            }
+                }
         }
         else{
-            spawnPoolWorkers();
-            spawnBlockUnlocker();
-            spawnPaymentProcessor();
             spawnApi();
-            spawnChartsDataCollector();
-            spawnTelegramBot();
         }
     });
 })();
@@ -144,99 +109,6 @@ function checkRedisVersion(callback){
     });
 }
 
-/**
- * Spawn pool workers module
- **/
-function spawnPoolWorkers(){
-    if (!config.poolServer || !config.poolServer.enabled || !config.poolServer.ports || config.poolServer.ports.length === 0) return;
-
-    if (config.poolServer.ports.length === 0){
-        log('error', logSystem, 'Pool server enabled but no ports specified');
-        return;
-    }
-
-    var numForks = (function(){
-        if (!config.poolServer.clusterForks)
-            return 1;
-        if (config.poolServer.clusterForks === 'auto')
-            return os.cpus().length;
-        if (isNaN(config.poolServer.clusterForks))
-            return 1;
-        return config.poolServer.clusterForks;
-    })();
-
-    var poolWorkers = {};
-
-    var createPoolWorker = function(forkId){
-        var worker = cluster.fork({
-            workerType: 'pool',
-            forkId: forkId
-        });
-        worker.forkId = forkId;
-        worker.type = 'pool';
-        poolWorkers[forkId] = worker;
-        worker.on('exit', function(code, signal){
-            log('error', logSystem, 'Pool fork %s died, spawning replacement worker...', [forkId]);
-            setTimeout(function(){
-                createPoolWorker(forkId);
-            }, 2000);
-        }).on('message', function(msg){
-            switch(msg.type){
-                case 'banIP':
-                    Object.keys(cluster.workers).forEach(function(id) {
-                        if (cluster.workers[id].type === 'pool'){
-                            cluster.workers[id].send({type: 'banIP', ip: msg.ip});
-                        }
-                    });
-                    break;
-            }
-        });
-    };
-
-    var i = 1;
-    var spawnInterval = setInterval(function(){
-        createPoolWorker(i.toString());
-        i++;
-        if (i - 1 === numForks){
-            clearInterval(spawnInterval);
-            log('info', logSystem, 'Pool spawned on %d thread(s)', [numForks]);
-        }
-    }, 10);
-}
-
-/**
- * Spawn block unlocker module
- **/
-function spawnBlockUnlocker(){
-    if (!config.blockUnlocker || !config.blockUnlocker.enabled) return;
-
-    var worker = cluster.fork({
-        workerType: 'blockUnlocker'
-    });
-    worker.on('exit', function(code, signal){
-        log('error', logSystem, 'Block unlocker died, spawning replacement...');
-        setTimeout(function(){
-            spawnBlockUnlocker();
-        }, 2000);
-    });
-}
-
-/**
- * Spawn payment processor module
- **/
-function spawnPaymentProcessor(){
-    if (!config.payments || !config.payments.enabled) return;
-
-    var worker = cluster.fork({
-        workerType: 'paymentProcessor'
-    });
-    worker.on('exit', function(code, signal){
-        log('error', logSystem, 'Payment processor died, spawning replacement...');
-        setTimeout(function(){
-            spawnPaymentProcessor();
-        }, 2000);
-    });
-}
 
 /**
  * Spawn API module
@@ -251,40 +123,6 @@ function spawnApi(){
         log('error', logSystem, 'API died, spawning replacement...');
         setTimeout(function(){
             spawnApi();
-        }, 2000);
-    });
-}
-
-/**
- * Spawn charts data collector module
- **/
-function spawnChartsDataCollector(){
-    if (!config.charts) return;
-
-    var worker = cluster.fork({
-        workerType: 'chartsDataCollector'
-    });
-    worker.on('exit', function(code, signal){
-        log('error', logSystem, 'chartsDataCollector died, spawning replacement...');
-        setTimeout(function(){
-            spawnChartsDataCollector();
-        }, 2000);
-    });
-}
-
-/**
- * Spawn telegram bot module
- **/
-function spawnTelegramBot(){
-    if (!config.telegram || !config.telegram.enabled || !config.telegram.token) return;
-
-    var worker = cluster.fork({
-        workerType: 'telegramBot'
-    });
-    worker.on('exit', function(code, signal){
-        log('error', logSystem, 'telegramBot died, spawning replacement...');
-        setTimeout(function(){
-            spawnTelegramBot();
         }, 2000);
     });
 }
