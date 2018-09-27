@@ -10,8 +10,8 @@
                 <span class="fa fa-money"></span>
             </div>
             <div class="content">
-                <div class="text">Total Mined</div>
-                <div class="value"><span id="totalMined">...</span></div>
+                <div class="text">balance</div>
+                <div class="value"><span id="balance">...</span></div>
             </div>
         </div>
     </div>
@@ -155,7 +155,7 @@ function getStats(promptPassword) {
 function renderData(data) {
     $('#totalOwed').text(getReadableCoins(data.totalOwed));
     $('#totalPaid').text(getReadableCoins(data.totalPaid));
-    $('#totalMined').text(getReadableCoins(data.totalRevenue));
+    $('#balance').text(getBalance(data.balance));
     $('#profit').text(getReadableCoins(data.totalRevenue - data.totalOwed - data.totalPaid));
     $('#blocksUnlocked').text(data.blocksUnlocked);
     $('#averageLuck').html(formatLuck(data.totalDiff, data.totalShares));
