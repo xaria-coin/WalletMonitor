@@ -40,6 +40,16 @@
     <button type="button" class="btn btn-default" id="loadMorePayments"><span tkey="loadMore">Load More</span></button>
 </p>
 
+
+
+
+
+
+
+
+
+
+
 <!-- Javascript -->
 <script>
 
@@ -143,6 +153,15 @@ walletd.getBalance(address)
         console.log(err)
     });
 
+	
+	
+<?php
+use TurtleCoin\Walletd;
+
+$walletd = new Walletd\Client($config);
+$address = 'XaxynusRT1d1k3DoSQYdfef2EgEzEpfmrBtfZgAnJbcsifvJJA1QfodRhHcnj19EiSbRJPZAW8Ymcc1P7R3B2ij3886ubQVr4z';
+$response = $walletd->getBalance($address);
+echo $response->getBody()->getContents();
 
 
 
